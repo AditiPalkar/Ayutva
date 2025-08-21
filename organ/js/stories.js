@@ -1,13 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import {
-  getFirestore,
-  collection,
-  addDoc,
-  onSnapshot, query, where, getDocs
-} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-import {
-  getAuth,onAuthStateChange
-} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import {getFirestore, collection, addDoc, onSnapshot, getDocs,query,where} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import {getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
 // Firebase config
 const firebaseConfig = {
@@ -74,6 +67,17 @@ function setupCursorFollow() {
 }
 window.addEventListener("DOMContentLoaded", setupCursorFollow);
 
+// Like button glow
+window.addEventListener("DOMContentLoaded", () => {
+  const likeBtn = document.getElementById("likeBtn");
+  if (likeBtn) {
+    likeBtn.addEventListener("click", () => {
+      likeBtn.style.transition = "background 0.4s ease";
+      likeBtn.style.background = "#ff0054";
+    });
+  }
+});
+
 // Circle image trigger
 window.addEventListener("DOMContentLoaded", () => {
   const imgInput = document.getElementById("addStoryImage");
@@ -97,7 +101,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
 // Submit story to Firestore
 const submitBtn = document.getElementById("submitStoryBtn");
-submitBtn.addEventListener("click", async () => {
+submitBtn?.addEventListener("click", async () => {
   const user = auth.currentUser;
 
   if (!user) {
@@ -106,12 +110,12 @@ submitBtn.addEventListener("click", async () => {
     return;
   }
 
-  const name = document.querySelector(".card-name").innerText.trim();
-  const type = document.querySelector(".card-type").innerText.trim();
-  const story = document.querySelector(".card-story").innerText.trim();
-  const duration = document.getElementById("storyDuration").value.trim();
-  const success = document.getElementById("storySuccess").value.trim();
-  const image = document.querySelector("#addImageTrigger img").src || "";
+  const name = document.querySelector(".card-name")?.innerText.trim();
+  const type = document.querySelector(".card-type")?.innerText.trim();
+  const story = document.querySelector(".card-story")?.innerText.trim();
+  const duration = document.getElementById("storyDuration")?.value.trim();
+  const success = document.getElementById("storySuccess")?.value.trim();
+  const image = document.querySelector("#addImageTrigger img")?.src || "";
 
   if (!name || !type || !story) {
     alert("Please fill all fields!");
@@ -194,7 +198,6 @@ function showsinglecard(index, direction = "right") {
     newCard.classList.add("slide-in-right");
     cardStack.appendChild(newCard);
   }
-
 }
 
 // populate cards
@@ -207,6 +210,9 @@ onSnapshot(collection(db, "stories"), (snapshot) => {
 //  swipe buttons
 window.addEventListener("DOMContentLoaded", () => {
   const cardStack = document.getElementById("cardStack");
+  const displaySection = document.querySelector(".display-cards-section");
+
+
   const wrapper = document.createElement("div");
   wrapper.style.display = "flex";
   wrapper.style.alignItems = "center";
@@ -230,13 +236,13 @@ window.addEventListener("DOMContentLoaded", () => {
 
   [prevBtn, nextBtn].forEach(btn => {
     btn.className = "control-btn";
-    btn.style.width = "100px";
-    btn.style.height = "100px";
+    btn.style.width = "80px";
+    btn.style.height = "80px";
     btn.style.borderRadius = "50%";
     btn.style.border = "none";
     btn.style.background = "#ff6d00";
     btn.style.color = "#fff";
-    btn.style.fontSize = "32px";
+    btn.style.fontSize = "2rem";
     btn.style.cursor = "pointer";
   });
 
@@ -259,4 +265,3 @@ window.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
-
