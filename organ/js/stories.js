@@ -3,10 +3,10 @@ import {
   getFirestore,
   collection,
   addDoc,
-  onSnapshot
+  onSnapshot, query, where, getDocs
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 import {
-  getAuth
+  getAuth,onAuthStateChange
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
 // Firebase config
@@ -22,6 +22,45 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
+
+ onAuthStateChanged(auth, async (user) => {
+  const matchLink = document.getElementById("matchstatlink");
+  if (!matchLink) return;
+
+  if (!user) {
+    matchLink.addEventListener("click", (e) => {
+      e.preventDefault();
+      alert("Please login to view match status");
+    });
+    return;
+  }
+
+  try {
+    const userEmail = user.email;
+
+    const receiverSnap = await getDocs(
+      query(collection(db, "ReceiverConsents"), where("email", "==", userEmail))
+    );
+
+    const donorSnap = await getDocs(
+      query(collection(db, "DonorConsents"), where("email", "==", userEmail))
+    );
+
+    matchLink.addEventListener("click", (e) => {
+      e.preventDefault();
+      if (!receiverSnap.empty) {
+        window.open("recievermatchstat.html", "_blank");
+      } else if (!donorSnap.empty) {
+        window.open("donormatchstat.html", "_blank");
+      } else {
+        alert("No match record found for this email.");
+      }
+    });
+
+  } catch (error) {
+    console.error("Error while checking user match:", error);
+  }
+});
 
 // Cursor follow
 function setupCursorFollow() {
@@ -220,3 +259,4 @@ window.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
+
