@@ -25,6 +25,8 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
+console.log("recievermatchstat.js LOADED >>>", new Date().toISOString());
+
 function isBloodCompatible(receiver, donor) {
   const compatible = {
   "O-": ["O-"],
@@ -145,4 +147,5 @@ function setupCursorFollow() {
     }
 }
 window.addEventListener('DOMContentLoaded', setupCursorFollow);
+
 
