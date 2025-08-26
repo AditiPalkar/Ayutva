@@ -116,4 +116,5 @@ const diagnosisInput = document.getElementById("diagnosis");
     window.messageTimer = setTimeout(() => {
       message.classList.remove("show");
     }, 3000); // Hide after 3 seconds
+
   });
